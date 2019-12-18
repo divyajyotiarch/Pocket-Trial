@@ -56,7 +56,7 @@ public class ImportWalletActivity extends AppCompatActivity {
         // Instantiate PocketAion
         List<String> netIds = new ArrayList<>();
         netIds.add(PocketEth.Networks.RINKEBY.getNetID());
-        this.pocketEth = new PocketEth(this.appContext,"DEVfF1RpqCPbm1X96qDAb85", netIds,5,50000,"4");
+        this.pocketEth = new PocketEth(this.appContext,"", netIds,5,50000,"4");
     }
     protected void importWallet() {
         TextView private_key_text = (TextView)findViewById(R.id.private_key_text);
@@ -85,11 +85,11 @@ public class ImportWalletActivity extends AppCompatActivity {
             @Override
             public Unit invoke(WalletPersistenceError walletPersistenceError, Wallet retrievedWallet) {
                 if (retrievedWallet != null) {
-                    WalletActivity.this.wallet = retrievedWallet;
-                    WalletActivity.this.loadHomeActivity();
+                    ImportWalletActivity.this.wallet = retrievedWallet;
+                    ImportWalletActivity.this.loadHomeActivity();
 
                 }else{
-                    WalletActivity.this.showPassphraseDialog(address, "Try again, wrong passphrase");
+                  //  ImportWalletActivity.this.showPassphraseDialog("Try again, wrong passphrase");
                 }
                 return null;
             }
