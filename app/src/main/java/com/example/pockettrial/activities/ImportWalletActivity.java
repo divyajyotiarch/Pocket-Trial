@@ -11,12 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pockettrial.MainActivity;
 import com.example.pockettrial.R;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -35,6 +41,9 @@ public class ImportWalletActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_wallet);
+
+
+
         Button import_W = (Button)findViewById(R.id.import_wallet_btn);
         Button create_W = (Button)findViewById(R.id.create_wallet_btn);
 
@@ -96,6 +105,12 @@ public class ImportWalletActivity extends AppCompatActivity {
         });
     }
 
+    public void toastAsync(String message) {
+        runOnUiThread(() -> {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        });
+    }
+
     protected void showPassphraseDialog(final Wallet wallet) {
         // get passphrase_dialog.xml view
         LayoutInflater layoutInflater = LayoutInflater.from(ImportWalletActivity.this);
@@ -111,6 +126,7 @@ public class ImportWalletActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (editText.getText().toString().trim().length() > 0){
                             String passphrase = editText.getText().toString();
+                            toastAsync("saving wallet...");
 
                             wallet.save(passphrase, ImportWalletActivity.this, new Function1<WalletPersistenceError, Unit>() {
                                 @Override
@@ -118,7 +134,6 @@ public class ImportWalletActivity extends AppCompatActivity {
                                     ImportWalletActivity.this.loadHomeActivity();
                                     return null;
                                 }
-
                             });
 
                         }else{

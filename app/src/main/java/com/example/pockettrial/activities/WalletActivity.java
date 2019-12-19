@@ -15,6 +15,10 @@ import android.widget.TextView;
 import com.example.pockettrial.MainActivity;
 import com.example.pockettrial.R;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.Security;
 import java.util.List;
 
 import kotlin.Unit;
@@ -22,6 +26,10 @@ import kotlin.jvm.functions.Function2;
 import network.pocket.core.errors.WalletPersistenceError;
 import network.pocket.core.model.Wallet;
 import android.widget.Toast;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+
 public class WalletActivity extends AppCompatActivity {
 
     Wallet wallet;
@@ -30,6 +38,7 @@ public class WalletActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet);
+
         // Get app context
         this.appContext = WalletActivity.this;
         // Add buttons
@@ -67,6 +76,8 @@ public class WalletActivity extends AppCompatActivity {
 
     protected void loadHomeActivity() {
         Intent messageScreenIntent = new Intent(this, MainActivity.class);
+        messageScreenIntent.putExtra("address", wallet.getAddress());
+        messageScreenIntent.putExtra("privateKey", wallet.getPrivateKey());
         startActivity(messageScreenIntent);
     }
 
@@ -122,4 +133,6 @@ public class WalletActivity extends AppCompatActivity {
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
+
+
 }

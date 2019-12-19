@@ -17,4 +17,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:layout_width="176dp"
+        android:layout_height="60dp"
+        android:text="Send Txn"
+        android:onClick="sendTxn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/display_key"></Button>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
