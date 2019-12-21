@@ -50,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
         List<String> netIds = new ArrayList<>();
 
         netIds.add(PocketEth.Networks.RINKEBY.getNetID());
-        this.pocketEth = new PocketEth(this.appContext,"DEVfF1RpqCPbm1X96qDAb85", netIds,5,50000,"4");
+        this.pocketEth = new PocketEth(this.appContext,"", netIds,5,50000,"4");
 
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
            // String address = extras.getString("address");
-            String address = "0x53D8C4d0a0dDD9faC8f5D1ab33E8e1673d9481Da";
-            String privateKey = "198ccd740c0b57fc8bcb25d544683684aebb1425738fe580a4fa6e0d8ed85f79";
+            String address = "";
+            String privateKey = "";
           //  String privateKey = extras.getString("privateKey");
 
 
