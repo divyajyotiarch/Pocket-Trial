@@ -9,9 +9,11 @@ import com.example.pockettrial.util.AppConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -20,6 +22,7 @@ import network.pocket.core.model.Wallet;
 import network.pocket.eth.EthContract;
 import network.pocket.eth.PocketEth;
 import network.pocket.eth.exceptions.EthContractException;
+import network.pocket.eth.util.HexStringUtil;
 
 import com.example.pockettrial.util.AppConfig;
 
@@ -28,6 +31,7 @@ public class SmartContract {
     PocketEth pocketEth;
     Context appContext;
     Wallet wallet;
+
     public EthContract ethContract;
 
 
@@ -63,14 +67,29 @@ public class SmartContract {
         return  "0x" + builder.toString();
     }
 
+    public byte[] encodeHexToPaddedByteArray(String hex, int maxLength) {
+        byte[] currBytes = HexStringUtil.hexStringToByteArray(hex);
+        if (currBytes.length >= maxLength) {
+            return currBytes;
+        }
+        byte[] result = new byte[maxLength];
+        // Pad with 0 bytes
+        Arrays.fill(result, (byte) 0);
+        int sub = (result.length - currBytes.length);
+        for (int j = sub; j < maxLength; j++) {
+            result[j] = currBytes[j - sub];
+        }
+        return result;
+    }
 
-    public void sendTransaction(Wallet wallet) throws JSONException {
 
-         String recipient = "0x53D8C4d0a0dDD9faC8f5D1ab33E8e1673d9481Da";
-         String Send_am = encode("500");
-         String Re_am = encode("400");
-         String Send_cur=encode("INR");
-         String Re_cur = encode("USD");
+    public void Transact() throws JSONException {
+
+        String recipient = "0x53D8C4d0a0dDD9faC8f5D1ab33E8e1673d9481Da";
+        byte[] Send_am = encodeHexToPaddedByteArray(encode("500"), 32);
+        byte[] Re_am = encodeHexToPaddedByteArray(encode("400"), 32);
+        byte[] Send_cur= encodeHexToPaddedByteArray(encode("INR"), 4);
+        byte[] Re_cur = encodeHexToPaddedByteArray(encode("USD"), 4);
 
         ArrayList<Object> functionParams = new ArrayList<>();
         functionParams.add(0,recipient);
@@ -79,20 +98,37 @@ public class SmartContract {
         functionParams.add(3,Send_cur);
         functionParams.add(4,Re_cur);
 
+
         //execute contract function
         try {
-            this.ethContract.executeFunction("transact", wallet, functionParams, null, new BigInteger("200000"), new BigInteger("10000000000"), new BigInteger("0"), new Function2<PocketError, String, Unit>() {
+
+            this.ethContract.executeFunction("transact", wallet, functionParams, null, new BigInteger("300000"), new BigInteger("20000000000"), new BigInteger("0"), new Function2<PocketError, String, Unit>() {
                 @Override
                 public Unit invoke(PocketError pocketError, String result) {
                     if (pocketError != null) {
                         pocketError.printStackTrace();
                     }else{
                         Log.d("txHash", result);
-                        Toast.makeText(appContext,result,Toast.LENGTH_LONG);
+
+                        pocketEth.getRinkeby().getEth().getTransactionReceipt(result, new Function2<PocketError, JSONObject, Unit>() {
+                            @Override
+                            public Unit invoke(PocketError pocketError, JSONObject jsonObject) {
+                                if(jsonObject!=null){
+                                    Log.d("returned ",jsonObject.toString());
+                                }else
+                                {
+                                    Log.d("","Couldn't fetch");
+                                }
+                                return null;
+                            }
+                        });
+                       // Toast.makeText(appContext,result,Toast.LENGTH_LONG);
                     }
                     return null;
                 }
             });
+
+
         } catch (EthContractException e) {
             e.printStackTrace();
         }

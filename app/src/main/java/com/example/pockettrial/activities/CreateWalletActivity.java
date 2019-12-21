@@ -65,7 +65,7 @@ public class CreateWalletActivity extends AppCompatActivity {
         // Instantiate PocketEth
         List<String> netIds = new ArrayList<>();
         netIds.add(PocketEth.Networks.RINKEBY.getNetID());
-        this.pocketEth = new PocketEth(this.appContext,"", netIds,5,50000,"4");
+        this.pocketEth = new PocketEth(this.appContext,"DEVfF1RpqCPbm1X96qDAb85", netIds,5,50000,"4");
     }
     protected void createWallet() {
         wallet = this.pocketEth.getRinkeby().createWallet();
